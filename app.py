@@ -3,7 +3,7 @@
 import streamlit as st
 from langchain-community.embeddings import OpenAIEmbeddings
 from langchain-community.vectorstores import FAISS
-from langchain-community.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.text_splitter import RecursiveCharacterTextSplitter
 from langchain-community.chains import RetrievalQA
 from langchain-community.llms import OpenAI
 
@@ -73,7 +73,9 @@ if user_query:
 from langchain-community.text_splitter import RecursiveCharacterTextSplitter
 
 # Try this instead
-from langchain-community.text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.text_splitter import RecursiveCharacterTextSplitter
+
+
 
 
 
