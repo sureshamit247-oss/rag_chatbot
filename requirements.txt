@@ -1,9 +1,8 @@
-langchain
 streamlit
+langchain
 langchain-community
-langchain-openai
 openai
 faiss-cpu
+pandas
 tiktoken
 chromadb
-pandas
