@@ -69,3 +69,9 @@ if user_query:
         result = qa_chain.run(user_query)
     st.subheader("Answer:")
     st.write(result)
+# Old (failing)
+from langchain_community.text_splitter import RecursiveCharacterTextSplitter
+
+# Try this instead
+from langchain_community.text_splitters import RecursiveCharacterTextSplitter
+
