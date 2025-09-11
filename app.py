@@ -1,59 +1,71 @@
+# app.py
+
 import streamlit as st
-from langchain_openai import ChatOpenAI
-from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.docstore.document import Document
+from langchain_community.vectorstores import FAISS
+from langchain_community.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.chains import RetrievalQA
+from langchain_community.llms import OpenAI
 
-# -----------------------------
-# Streamlit App: User Registration
-# -----------------------------
-st.title("🤖 RAG Chatbot - User Registration")
+# -------------------------------
+# 1. Load OpenAI API Key
+# -------------------------------
+# Make sure you add your API key in Streamlit secrets:
+# [OPENAI]
+# OPENAI_API_KEY = "sk-xxxx..."
 
-with st.form("registration_form"):
-    name = st.text_input("Full Name")
-    dob = st.date_input("Date of Birth")
-    location = st.text_input("Location")
-    email = st.text_input("Email")
-    contact = st.text_input("Contact Number")
-    country = st.text_input("Country of Living")
-    hobbies = st.text_area("Your Hobbies (e.g. listening to Telugu songs of 2024 movies)")
+api_key = st.secrets["OPENAI_API_KEY"]
 
-    submitted = st.form_submit_button("Register")
+if not api_key:
+    st.error("Please set your OPENAI_API_KEY in Streamlit secrets.")
+    st.stop()
 
-if submitted:
-    st.success(f"Welcome {name}! 🎉")
-    st.write("Your registration details have been saved.")
-    st.write(f"**Hobbies:** {hobbies}")
+# -------------------------------
+# 2. Initialize Embeddings
+# -------------------------------
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    openai_api_key=api_key
+)
 
-    # -----------------------------
-    # Show YouTube links based on hobbies
-    # -----------------------------
-    if "telugu" in hobbies.lower():
-        st.video("https://www.youtube.com/watch?v=abcd1234")  # Replace with real Telugu playlist
-    elif "cricket" in hobbies.lower():
-        st.video("https://www.youtube.com/watch?v=wxyz5678")  # Replace with real Cricket video
-    else:
-        st.write("No specific hobby detected. Try adding 'Telugu songs' or 'Cricket'.")
+# -------------------------------
+# 3. Load Documents (example)
+# -------------------------------
+docs = [
+    "Paris is the capital of France.",
+    "The Eiffel Tower is in Paris.",
+    "Python is a popular programming language."
+]
 
-# -----------------------------
-# Example: RAG Chatbot (demo)
-# -----------------------------
-if st.button("Start Chatbot"):
-    st.write("🔗 Initializing chatbot...")
+# Split documents into chunks
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
+chunks = text_splitter.split_documents(docs)
 
-    embeddings = OpenAIEmbeddings()
-    texts = ["This is a demo document for RAG chatbot.", "LangChain makes RAG easy."]
-    docs = [Document(page_content=t) for t in texts]
+# Create/load FAISS vector store
+if st.secrets.get("FAISS_INDEX_EXISTS"):
+    vectorstore = FAISS.load_local("faiss_index", embeddings)
+else:
+    vectorstore = FAISS.from_documents(chunks, embeddings)
+    vectorstore.save_local("faiss_index")
 
-    text_splitter = CharacterTextSplitter(chunk_size=50, chunk_overlap=10)
-    split_docs = text_splitter.split_documents(docs)
+# -------------------------------
+# 4. Setup QA chain
+# -------------------------------
+qa_chain = RetrievalQA.from_chain_type(
+    llm=OpenAI(temperature=0, openai_api_key=api_key),
+    retriever=vectorstore.as_retriever(),
+    return_source_documents=True
+)
 
-    vectorstore = FAISS.from_documents(split_docs, embeddings)
-    retriever = vectorstore.as_retriever()
+# -------------------------------
+# 5. Streamlit UI
+# -------------------------------
+st.title("📚 RAG Chatbot")
 
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
-    query = "What is this chatbot about?"
-    retrieved_docs = retriever.get_relevant_documents(query)
-    st.write("📄 Retrieved context:", retrieved_docs)
-    st.write("💡 Chatbot response:", llm.invoke(query))
+user_query = st.text_input("Ask a question about your documents:")
+
+if user_query:
+    with st.spinner("Thinking..."):
+        result = qa_chain.run(user_query)
+    st.subheader("Answer:")
+    st.write(result)
