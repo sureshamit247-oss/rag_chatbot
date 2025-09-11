@@ -1,8 +1,8 @@
-streamlit
 langchain
-langchain-community
+langchain-community>=0.2.0
 langchain-openai
 openai
 faiss-cpu
 tiktoken
 chromadb
+streamlit
