@@ -1,11 +1,11 @@
 # app.py
 
 import streamlit as st
-from langchain-community.embeddings import OpenAIEmbeddings
-from langchain-community.vectorstores import FAISS
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain_community.text_splitter import RecursiveCharacterTextSplitter
-from langchain-community.chains import RetrievalQA
-from langchain-community.llms import OpenAI
+from langchain_community.chains import RetrievalQA
+from langchain_community.llms import OpenAI
 
 # -------------------------------
 # 1. Load OpenAI API Key
@@ -70,10 +70,11 @@ if user_query:
     st.subheader("Answer:")
     st.write(result)
 # Old (failing)
-from langchain-community.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.text_splitter import RecursiveCharacterTextSplitter
 
 # Try this instead
 from langchain_community.text_splitter import RecursiveCharacterTextSplitter
+
 
 
 
