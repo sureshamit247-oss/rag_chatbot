@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SportShop - Your Sports Gear Destination</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">🏅</span>
+        <h1>SportShop</h1>
+      </div>
+      <div class="header-actions">
+        <input id="searchInput" class="search-input" type="search" placeholder="Search products..." aria-label="Search products" />
+        <button id="cartButton" class="cart-button" aria-label="Open cart" title="Cart">
+          🛒 <span id="cartCount" class="cart-count" aria-live="polite">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Registration Modal -->
+      <div id="registrationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="registrationTitle" hidden>
+        <div class="modal-content">
+          <button class="modal-close" id="closeRegistration" aria-label="Close registration">✖</button>
+          <h2 id="registrationTitle">Welcome! Create your SportShop profile</h2>
+          <p class="subtle">Tell us a bit about you to personalize your store.</p>
+
+          <form id="registrationForm" novalidate>
+            <div class="form-row">
+              <label for="fullName">Full name</label>
+              <input id="fullName" name="fullName" type="text" autocomplete="name" required />
+            </div>
+
+            <div class="form-row">
+              <label for="dob">Date of birth</label>
+              <input id="dob" name="dob" type="date" required />
+              <div id="ageDisplay" class="help-text" aria-live="polite"></div>
+            </div>
+
+            <div class="form-row">
+              <label for="country">Country of living</label>
+              <select id="country" name="country" required>
+                <option value="" disabled selected>Select your country</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+
+            <div class="form-row">
+              <label for="phone">Phone number</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="[0-9+\-()\s]{7,}" required />
+            </div>
+
+            <fieldset class="form-row">
+              <legend>Interested sports</legend>
+              <div class="chips" id="sportsChips"></div>
+            </fieldset>
+
+            <fieldset class="form-row">
+              <legend>Favorite brands</legend>
+              <div class="chips" id="brandsChips"></div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="submit" class="primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <section class="filters">
+        <div class="filter-group">
+          <h3>Brands</h3>
+          <div id="brandFilters" class="filter-items"></div>
+        </div>
+        <div class="filter-group">
+          <h3>Sports</h3>
+          <div id="sportFilters" class="filter-items"></div>
+        </div>
+        <div class="filter-group">
+          <h3>Sort</h3>
+          <select id="sortSelect" aria-label="Sort products">
+            <option value="personalized">Personalized</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A → Z</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Products Grid -->
+      <section>
+        <h2 class="section-title">Recommended for you</h2>
+        <div id="productsGrid" class="products-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <!-- Cart Drawer -->
+    <aside id="cartDrawer" class="cart-drawer" aria-labelledby="cartTitle" hidden>
+      <div class="cart-header">
+        <h2 id="cartTitle">Your Cart</h2>
+        <button id="closeCart" class="icon-button" aria-label="Close cart">✖</button>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Subtotal</span>
+          <strong id="cartSubtotal">$0.00</strong>
+        </div>
+        <button id="checkoutButton" class="primary">Checkout</button>
+      </div>
+    </aside>
+
+    <!-- Voice Help Bot -->
+    <button id="helpBotToggle" class="help-bot-toggle" aria-label="Open help voice bot">💬</button>
+    <section id="helpBot" class="help-bot" hidden aria-live="polite">
+      <header class="help-bot-header">
+        <h2>Help Assistant</h2>
+        <button id="helpBotClose" class="icon-button" aria-label="Close help">✖</button>
+      </header>
+      <div id="helpTranscript" class="help-transcript"></div>
+      <div class="help-controls">
+        <button id="helpSpeak" class="secondary">Speak</button>
+        <button id="helpStop" class="secondary">Stop</button>
+        <input id="helpInput" type="text" placeholder="Ask for help... Try: 'find nike running shoes'" />
+        <button id="helpSend" class="primary">Send</button>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" hidden></div>
+
+    <script src="./app.js" defer></script>
+  </body>
+  </html>
+
